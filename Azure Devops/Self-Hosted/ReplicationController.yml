@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azdevops-deployment
+  labels:
+    app: azdevops-agent
+spec:
+  replicas: 10 # here is the configuration for the actual agent always running
+  selector:
+    matchLabels:
+      app: azdevops-agent
+  template:
+    metadata:
+      labels:
+        app: azdevops-agent
+    spec:
+      containers:
+      - name: kubepodcreation
+        image: 108995453146.dkr.ecr.us-east-2.amazonaws.com/ado:latest
+        env:
+        - name: AZP_URL
+          value: https://vvicki9010.visualstudio.com/
+        - name: AZP_TOKEN
+          value: 
+        - name: AZP_POOL
+          value: eks
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker-volume
+      volumes:
+      - name: docker-volume
+        hostPath:
+          path: /var/run/docker.sock
